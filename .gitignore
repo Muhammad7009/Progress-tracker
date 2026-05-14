@@ -1,0 +1,30 @@
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+
+# --- Environment & Secrets ---
+.env
+*.env
+instance/
+data/
+*.db
+secrets.py
+
+# --- Backend (Python) ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+.pytest_cache/
+
+# --- Frontend (Node/React) ---
+node_modules/
+dist/
+build/
+.eslintcache
+.stylelintcache
+
+# --- Docker ---
+.dockerignore
