@@ -12,18 +12,23 @@ const ProgressTracker = () => {
   const [submittedToday, setSubmittedToday] = useState(false);
 // 1. Top-level useEffect for Authentication and initial data fetch
  const token = sessionStorage.getItem("token");
-  useEffect(() => {
-    if (!token) {
-      window.location.href = "/";}
+ const userId = sessionStorage.getItem("user_id");
+ useEffect(() => {
+  if (!token) {
+    window.location.href = "/";}
 else{
  refreshData();
+ 
 }
 
-  }, []);
+}, []);
+
+
 const refreshData = async () => {
   // 1. Pull the token and ID inside the function
  
-  const userId = sessionStorage.getItem("user_id");
+  const token = sessionStorage.getItem("token");
+  const userId = sessionStorage.getItem("user_id")  || 2;
 
   // 2. Safety check: If no token, the backend WILL return 422
   if (!token) {
@@ -32,7 +37,7 @@ const refreshData = async () => {
   }
 
   try {
-    const response = await fetch(`http://[::1]:5000/api/progress/graph/${userId}`, {
+    const response = await fetch(`http://localhost:5000/api/progress/graph/${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -42,29 +47,29 @@ const refreshData = async () => {
     });
 
     if (!response.ok) {
+      console.log("Error Occured")
       if (response.status === 422) {
-        console.error("Backend says the Token is missing or malformed (422).");
+        console.error("Backend says the Token is missing or malformed (422).",token);
       }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
     setWins(data);
+   
   } catch (err) {
-    console.error("Fetch failed:", err.message);
+    console.error("Fetch failed:", err.message,token,userId);
   }
 };
-
 
   const handleDailySubmit = async (e) => {
     e.preventDefault();
     if (!dailyProgress) return;
 
-    const token = sessionStorage.getItem("token");
-    const currentUserId = sessionStorage.getItem("user_id"); // Must match AuthPage key!
+   ; // Must match AuthPage key!
 
     try {
-      const response = await fetch('http://[::1]:5000/api/progress', {
+      const response = await fetch('http://localhost:5000/api/progress', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -73,7 +78,7 @@ const refreshData = async () => {
         body: JSON.stringify({
           task_name: progressDis,
           current_value: parseFloat(dailyProgress),
-          user_id: parseInt(currentUserId) // Ensure it's a number, not a string
+          user_id: parseInt(userId) // Ensure it's a number, not a string
         })
       });
 
@@ -106,7 +111,7 @@ const saveSettings = async (e) => {
   }
 
   try {
-    const response = await fetch(`http://[::1]:5000/api/user/settings/${currentUserId}`, {
+    const response = await fetch(`http://localhost:5000/api/user/settings/${currentUserId}`, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
