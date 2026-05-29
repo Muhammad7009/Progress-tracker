@@ -1,0 +1,14 @@
+version: 3
+
+services:
+  backend:
+    source: ./backend
+    build:
+      builder: DOCKERFILE
+  
+  frontend:
+    source: ./frontend
+    build:
+      builder: DOCKERFILE
+    dependsOn:
+      backend: SUCCESS

@@ -25,5 +25,9 @@ build/
 .eslintcache
 .stylelintcache
 
+.env
+cron_debug.log
+progress-tracker-log.txt
+
 # --- Docker ---
 .dockerignore
